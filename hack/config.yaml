@@ -1,0 +1,20 @@
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  gen:
+    dao:
+      - link: "pgsql:bamboo-dashboard:bamboo-dashboard@tcp(127.0.0.1:5432)/bamboo-dashboard"
+        jsonCase: "Snake"
+        removePrefix: "xf_"
+  build:
+    name: "bamboo-dashboard"
+    arch: "amd64,arm,arm64"
+    system: "windows,linux,darwin"
+    mod: "none"
+    packSrc: "resource"
+    path: "target"
+    version: "v1.0.0"
+  docker:
+    build: "-a amd64 -s linux -p temp -ew"
+    tagPrefixes:
+      - my.image.pub/my-app
