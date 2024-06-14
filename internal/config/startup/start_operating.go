@@ -34,8 +34,11 @@ import (
 //
 // 该方法为创建数据库表的方法，在 GoFrame 的 cmd.go 文件使用；
 // 会检查数据库是否存在此方法，若不存在
+//
+// # 参数
+//   - ctx:		上下文
 func startDatabase(ctx context.Context) {
-	g.Log().Noticef(ctx, "[STARTUP] 数据表初始化...")
+	g.Log().Noticef(ctx, "[STARTUP] 数据表初始化")
 
 	// 系统表
 	databaseTablePrepare(ctx, "info")
@@ -43,4 +46,51 @@ func startDatabase(ctx context.Context) {
 	databaseTablePrepare(ctx, "role")
 	// 用户表
 	databaseTablePrepare(ctx, "user")
+	// 服务器表
+	databaseTablePrepare(ctx, "server")
+	// 探针表
+	databaseTablePrepare(ctx, "agent")
+	// 探针数据表
+	databaseTablePrepare(ctx, "agent_data")
+}
+
+// startInformation
+//
+// # 信息表初始化
+//
+// 该方法为初始化信息表的方法，检查信息表是否有此数据，若没有则初始化
+//
+// # 参数
+//   - ctx:		上下文
+func startInformation(ctx context.Context) {
+	g.Log().Noticef(ctx, "[STARTUP] 信息表初始化")
+
+	// 系统相关信息
+	informationDataPrepare(ctx, "system_name", "竹监控")
+	informationDataPrepare(ctx, "system_version", "1.0.0")
+	informationDataPrepare(ctx, "system_author", "筱锋")
+	informationDataPrepare(ctx, "system_license", "MIT")
+	informationDataPrepare(ctx, "system_license_link", "https://opensource.org/license/MIT")
+	informationDataPrepare(ctx, "system_description", "一个由 Go 编写的服务监控系统")
+	// 配置相关信息
+	informationDataPrepare(ctx, "config_redis", "false")
+	informationDataPrepare(ctx, "config_redis_host", "localhost")
+	informationDataPrepare(ctx, "config_redis_port", "6379")
+	informationDataPrepare(ctx, "config_redis_password", "")
+	informationDataPrepare(ctx, "config_redis_db", "0")
+	informationDataPrepare(ctx, "config_smtp", "false")
+	informationDataPrepare(ctx, "config_smtp_host", "smtp.example.com")
+	informationDataPrepare(ctx, "config_smtp_port", "25")
+	informationDataPrepare(ctx, "config_smtp_user", "bamboo@x-lf.com")
+	informationDataPrepare(ctx, "config_smtp_password", "password")
+	// 网站相关信息
+	informationDataPrepare(ctx, "web_title", "竹控")
+	informationDataPrepare(ctx, "web_description", "一个由 Go 编写的服务监控系统")
+	informationDataPrepare(ctx, "web_keywords", "Go, 竹监控, 服务监控, 系统监控")
+	// 邮件模板配置信息
+	informationDataPrepare(
+		ctx,
+		"mail_template_verification_code",
+		mailReplaceLicense("verification_code"),
+	)
 }

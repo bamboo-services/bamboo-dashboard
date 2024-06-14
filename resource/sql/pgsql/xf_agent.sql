@@ -21,36 +21,29 @@
  * ----------------------------------------------------------------------
  */
 
-package startup
+-- auto-generated definition
+create table "%xf_database%"
+(
+    agent_uuid  uuid                    not null
+        constraint "%xf_database%_pk"
+            primary key,
+    uuid        uuid                    not null
+        constraint "%xf_database%_%xf_user%_uuid_fk"
+            references "%xf_user%"
+            on delete cascade on update cascade,
+    server_uuid uuid
+        constraint "%xf_database%_%xf_server%_server_uuid_fk"
+            references "%xf_server%"
+            on delete cascade on update cascade,
+    status      boolean   default false not null,
+    created_at  timestamp default now() not null,
+    updated_at  timestamp
+);
 
-import (
-	"context"
-	"github.com/gogf/gf/v2/frame/g"
-)
-
-// Start
-//
-// # 启动
-//
-// 该方法为启动方法，在 GoFrame 的 cmd.go 文件使用；在路由表加载之前优先初始化工作，初始化完毕后执行路由表加载；
-// 请勿随意修改启动顺序，否则可能导致系统无法正常运行；
-//
-// # 附属参数
-//   - su:		启动(StartUp)
-func Start(ctx context.Context) {
-	g.Log().Noticef(ctx, "==================================================")
-	g.Log().Noticef(ctx, "[STARTUP] 系统开始初始化...")
-
-	/*
-	 * 初始化检查
-	 */
-
-	// 数据库初始化
-	startDatabase(ctx)
-	// 信息表初始化
-	startInformation(ctx)
-
-	g.Log().Noticef(ctx, "[STARTUP] 系统初始化完成")
-	g.Log().Noticef(ctx, "==================================================")
-
-}
+comment on table "%xf_database%" is '探针信息表';
+comment on column "%xf_database%".agent_uuid is '探针信息UUID';
+comment on column "%xf_database%".uuid is '用户 uuid';
+comment on column "%xf_database%".server_uuid is '服务器UUID';
+comment on column "%xf_database%".status is '状态表';
+comment on column "%xf_database%".created_at is '创建时间';
+comment on column "%xf_database%".updated_at is '修改时间';

@@ -21,36 +21,24 @@
  * ----------------------------------------------------------------------
  */
 
-package startup
+// =================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// =================================================================================
+
+package do
 
 import (
-	"context"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Start
-//
-// # 启动
-//
-// 该方法为启动方法，在 GoFrame 的 cmd.go 文件使用；在路由表加载之前优先初始化工作，初始化完毕后执行路由表加载；
-// 请勿随意修改启动顺序，否则可能导致系统无法正常运行；
-//
-// # 附属参数
-//   - su:		启动(StartUp)
-func Start(ctx context.Context) {
-	g.Log().Noticef(ctx, "==================================================")
-	g.Log().Noticef(ctx, "[STARTUP] 系统开始初始化...")
-
-	/*
-	 * 初始化检查
-	 */
-
-	// 数据库初始化
-	startDatabase(ctx)
-	// 信息表初始化
-	startInformation(ctx)
-
-	g.Log().Noticef(ctx, "[STARTUP] 系统初始化完成")
-	g.Log().Noticef(ctx, "==================================================")
-
+// Agent is the golang structure of table agent for DAO operations like Where/Data.
+type Agent struct {
+	g.Meta     `orm:"table:agent, do:true"`
+	AgentUuid  interface{} // 探针信息UUID
+	Uuid       interface{} // 用户 uuid
+	ServerUuid interface{} // 服务器UUID
+	Status     interface{} // 状态表
+	CreatedAt  *gtime.Time // 创建时间
+	UpdatedAt  *gtime.Time // 修改时间
 }

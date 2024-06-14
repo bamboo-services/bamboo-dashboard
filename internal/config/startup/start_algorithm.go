@@ -24,7 +24,11 @@
 package startup
 
 import (
+	"bamboo-dashboard/internal/dao"
+	"bamboo-dashboard/internal/model/do"
+	"bamboo-dashboard/internal/model/entity"
 	"context"
+	"github.com/bamboo-services/bamboo-utils/butil"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gres"
@@ -106,11 +110,75 @@ func databaseTablePrepare(ctx context.Context, tableName string) {
 //   - string:		替换后的 SQL 语句
 func replaceStatement(table, statement string) string {
 	getPrefix := g.DB().GetPrefix()
-	getReplace := strings.Replace(statement, "%xf_database%", getPrefix+table, -1)
-	getReplace = strings.Replace(getReplace, string(gres.GetContent("resource/license.txt")), "", -1)
+	getReplace := strings.ReplaceAll(statement, "%xf_database%", getPrefix+table)
+	getReplace = strings.ReplaceAll(getReplace, string(gres.GetContent("resource/license_sql.txt")), "")
 	// 专项内容替换
-	getReplace = strings.Replace(getReplace, "%xf_user%", getPrefix+"user", -1)
-	getReplace = strings.Replace(getReplace, "%xf_role%", getPrefix+"role", -1)
-	getReplace = strings.Replace(getReplace, "%xf_info%", getPrefix+"info", -1)
+	getReplace = strings.ReplaceAll(getReplace, "%xf_user%", getPrefix+"user")
+	getReplace = strings.ReplaceAll(getReplace, "%xf_role%", getPrefix+"role")
+	getReplace = strings.ReplaceAll(getReplace, "%xf_info%", getPrefix+"info")
+	getReplace = strings.ReplaceAll(getReplace, "%xf_agent%", getPrefix+"agent")
+	getReplace = strings.ReplaceAll(getReplace, "%xf_server%", getPrefix+"server")
 	return getReplace
+}
+
+// informationDataPrepare
+//
+// # 信息表初始化
+//
+// 该方法为初始化信息表的方法，检查信息表是否有此数据，若没有则初始化
+//
+// # 参数
+//   - ctx:		上下文
+//   - key:		键
+//   - value:	值
+func informationDataPrepare(ctx context.Context, key, value string) {
+	// 检查数据是否存在
+	record, _ := dao.Info.Ctx(ctx).Where(do.Info{Keyword: key}).One()
+	if record.IsEmpty() {
+		_, err := dao.Info.Ctx(ctx).Data(entity.Info{
+			SystemUuid: butil.GenerateRandUUID().String(),
+			Keyword:    key,
+			Value:      value,
+		}).OnConflict("keyword").Save()
+		if err != nil {
+			g.Log().Errorf(ctx, "[STARTUP] 信息表初始化失败: %s", err.Error())
+			os.Exit(502)
+		}
+		if len(value) > 50 {
+			g.Log().Debugf(ctx, "[STARTUP] 初始化信息表键 %s 值 %s 成功", key, strings.TrimSpace(
+				strings.ReplaceAll(value[0:50], "\n", "")+"..."),
+			)
+		} else {
+			g.Log().Debugf(ctx, "[STARTUP] 初始化信息表键 %s 值 %s 成功", key, value)
+		}
+	}
+}
+
+// mailReplaceLicense
+//
+// # 替换许可
+//
+// 该方法为替换许可的方法，用于替换 SQL 文件中的许可声明；实现动态替换 SQL 文件中的许可声明；
+//
+// # 参数
+//   - mailTemplateName:	邮件模板名
+//
+// # 返回
+//   - string:			替换后的邮件模板
+func mailReplaceLicense(mailTemplateName string) string {
+	// 获取邮件模板
+	mailTemplate := gres.GetContent("resource/template/mail/mail_" + mailTemplateName + ".html")
+	if len(mailTemplate) > 0 {
+		getReplace := strings.Replace(
+			string(mailTemplate),
+			string(gres.GetContent("resource/license_html.txt")),
+			"",
+			-1,
+		)
+		return getReplace
+	} else {
+		g.Log().Errorf(context.Background(), "[STARTUP] 不存在邮件模板 %s", mailTemplateName)
+		os.Exit(502)
+	}
+	return ""
 }

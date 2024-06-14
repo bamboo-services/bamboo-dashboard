@@ -35,3 +35,6 @@ comment on table "%xf_database%" is '系统信息表';
 comment on column "%xf_database%".system_uuid is '系统主键';
 comment on column "%xf_database%".keyword is '系统键';
 comment on column "%xf_database%".value is '系统值';
+
+create unique index info_keyword_uindex
+    on "%xf_database%" (keyword);

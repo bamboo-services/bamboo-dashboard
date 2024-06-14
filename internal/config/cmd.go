@@ -43,6 +43,7 @@ var (
 			startup.Start(ctx)
 			// 启动服务
 			s := g.Server()
+			s.SetDumpRouterMap(false)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(bmiddle.BambooMiddleHandler)
 				group.Bind()

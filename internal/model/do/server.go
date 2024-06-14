@@ -21,36 +21,28 @@
  * ----------------------------------------------------------------------
  */
 
-package startup
+// =================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// =================================================================================
+
+package do
 
 import (
-	"context"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// Start
-//
-// # 启动
-//
-// 该方法为启动方法，在 GoFrame 的 cmd.go 文件使用；在路由表加载之前优先初始化工作，初始化完毕后执行路由表加载；
-// 请勿随意修改启动顺序，否则可能导致系统无法正常运行；
-//
-// # 附属参数
-//   - su:		启动(StartUp)
-func Start(ctx context.Context) {
-	g.Log().Noticef(ctx, "==================================================")
-	g.Log().Noticef(ctx, "[STARTUP] 系统开始初始化...")
-
-	/*
-	 * 初始化检查
-	 */
-
-	// 数据库初始化
-	startDatabase(ctx)
-	// 信息表初始化
-	startInformation(ctx)
-
-	g.Log().Noticef(ctx, "[STARTUP] 系统初始化完成")
-	g.Log().Noticef(ctx, "==================================================")
-
+// Server is the golang structure of table server for DAO operations like Where/Data.
+type Server struct {
+	g.Meta          `orm:"table:server, do:true"`
+	ServerUuid      interface{} // 服务器UUID
+	Ipv4Address     interface{} // ip地址
+	Ipv6Address     interface{} //
+	Location        interface{} // 机子所在地址
+	SystemOperating interface{} // 操作系统
+	SystemRam       interface{} // 系统 RAM 大小
+	SystemRom       interface{} // 系统ROM大小
+	SystemCpu       interface{} // 服务器 CPU 型号信息
+	CreatedAt       *gtime.Time // 创建时间
+	UpdatedAt       *gtime.Time // 更新时间
 }
