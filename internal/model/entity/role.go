@@ -21,6 +21,24 @@
  * ----------------------------------------------------------------------
  */
 
-package packed
+// =================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// =================================================================================
 
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+package entity
+
+import (
+	"github.com/gogf/gf/v2/encoding/gjson"
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
+// Role is the golang structure for table role.
+type Role struct {
+	RoleUuid        string      `json:"role_uuid"        orm:"role_uuid"        description:"角色 uuid"`     // 角色 uuid
+	RoleName        string      `json:"role_name"        orm:"role_name"        description:"角色名字(英文)"`    // 角色名字(英文)
+	DisplayName     string      `json:"display_name"     orm:"display_name"     description:"展示名字"`        // 展示名字
+	Description     string      `json:"description"      orm:"description"      description:"角色描述"`        // 角色描述
+	AgentPermission *gjson.Json `json:"agent_permission" orm:"agent_permission" description:"拥有 Agent 权限"` // 拥有 Agent 权限
+	CreatedAt       *gtime.Time `json:"created_at"       orm:"created_at"       description:"创建时间"`        // 创建时间
+	UpdatedAt       *gtime.Time `json:"updated_at"       orm:"updated_at"       description:"修改时间"`        // 修改时间
+}

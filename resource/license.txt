@@ -20,7 +20,3 @@
  *   赔、损害或其他责任负责，无论是因合同、侵权或其他行为导致的。
  * ----------------------------------------------------------------------
  */
-
-package packed
-
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed

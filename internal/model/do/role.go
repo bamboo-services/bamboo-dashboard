@@ -21,6 +21,26 @@
  * ----------------------------------------------------------------------
  */
 
-package packed
+// =================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// =================================================================================
 
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+package do
+
+import (
+	"github.com/gogf/gf/v2/encoding/gjson"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
+// Role is the golang structure of table role for DAO operations like Where/Data.
+type Role struct {
+	g.Meta          `orm:"table:role, do:true"`
+	RoleUuid        interface{} // 角色 uuid
+	RoleName        interface{} // 角色名字(英文)
+	DisplayName     interface{} // 展示名字
+	Description     interface{} // 角色描述
+	AgentPermission *gjson.Json // 拥有 Agent 权限
+	CreatedAt       *gtime.Time // 创建时间
+	UpdatedAt       *gtime.Time // 修改时间
+}

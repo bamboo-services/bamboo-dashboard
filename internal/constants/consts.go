@@ -21,6 +21,4 @@
  * ----------------------------------------------------------------------
  */
 
-package packed
-
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+package constants

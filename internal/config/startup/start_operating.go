@@ -21,6 +21,26 @@
  * ----------------------------------------------------------------------
  */
 
-package packed
+package startup
 
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+import (
+	"context"
+	"github.com/gogf/gf/v2/frame/g"
+)
+
+// startDatabase
+//
+// # 数据表准备
+//
+// 该方法为创建数据库表的方法，在 GoFrame 的 cmd.go 文件使用；
+// 会检查数据库是否存在此方法，若不存在
+func startDatabase(ctx context.Context) {
+	g.Log().Noticef(ctx, "[STARTUP] 数据表初始化...")
+
+	// 系统表
+	databaseTablePrepare(ctx, "info")
+	// 角色表
+	databaseTablePrepare(ctx, "role")
+	// 用户表
+	databaseTablePrepare(ctx, "user")
+}

@@ -17,4 +17,6 @@ manifest/output/
 temp/
 temp.yaml
 target
-manifest/config/config.yaml
+manifest/config/config.yml
+.logs/
+internal/packed/build_pack_data.go

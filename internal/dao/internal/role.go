@@ -34,58 +34,66 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// InfoDao is the data access object for table info.
-type InfoDao struct {
+// RoleDao is the data access object for table role.
+type RoleDao struct {
 	table   string      // table is the underlying table name of the DAO.
 	group   string      // group is the database configuration group name of current DAO.
-	columns InfoColumns // columns contains all the column names of Table for convenient usage.
+	columns RoleColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// InfoColumns defines and stores column names for table info.
-type InfoColumns struct {
-	SystemUuid string // 系统主键
-	Keyword    string // 系统键
-	Value      string // 系统值
+// RoleColumns defines and stores column names for table role.
+type RoleColumns struct {
+	RoleUuid        string // 角色 uuid
+	RoleName        string // 角色名字(英文)
+	DisplayName     string // 展示名字
+	Description     string // 角色描述
+	AgentPermission string // 拥有 Agent 权限
+	CreatedAt       string // 创建时间
+	UpdatedAt       string // 修改时间
 }
 
-// infoColumns holds the columns for table info.
-var infoColumns = InfoColumns{
-	SystemUuid: "system_uuid",
-	Keyword:    "keyword",
-	Value:      "value",
+// roleColumns holds the columns for table role.
+var roleColumns = RoleColumns{
+	RoleUuid:        "role_uuid",
+	RoleName:        "role_name",
+	DisplayName:     "display_name",
+	Description:     "description",
+	AgentPermission: "agent_permission",
+	CreatedAt:       "created_at",
+	UpdatedAt:       "updated_at",
 }
 
-// NewInfoDao creates and returns a new DAO object for table data access.
-func NewInfoDao() *InfoDao {
-	return &InfoDao{
+// NewRoleDao creates and returns a new DAO object for table data access.
+func NewRoleDao() *RoleDao {
+	return &RoleDao{
 		group:   "default",
-		table:   "info",
-		columns: infoColumns,
+		table:   "role",
+		columns: roleColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
-func (dao *InfoDao) DB() gdb.DB {
+func (dao *RoleDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of current dao.
-func (dao *InfoDao) Table() string {
+func (dao *RoleDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of current dao.
-func (dao *InfoDao) Columns() InfoColumns {
+func (dao *RoleDao) Columns() RoleColumns {
 	return dao.columns
 }
 
 // Group returns the configuration group name of database of current dao.
-func (dao *InfoDao) Group() string {
+func (dao *RoleDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
-func (dao *InfoDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *RoleDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -95,6 +103,6 @@ func (dao *InfoDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *InfoDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *RoleDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

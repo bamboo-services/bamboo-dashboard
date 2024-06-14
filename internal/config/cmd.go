@@ -21,6 +21,34 @@
  * ----------------------------------------------------------------------
  */
 
-package packed
+package config
 
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+import (
+	"bamboo-dashboard/internal/config/startup"
+	"context"
+	"github.com/bamboo-services/bamboo-utils/bmiddle"
+
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gcmd"
+)
+
+var (
+	Main = gcmd.Command{
+		Name:  "main",
+		Usage: "main",
+		Brief: "竹监控「BambooDashboard」 - 一个由 Go 编写的服务监控系统(A service monitoring system written in Go)",
+		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			// 系统初始化
+			startup.Start(ctx)
+			// 启动服务
+			s := g.Server()
+			s.Group("/", func(group *ghttp.RouterGroup) {
+				group.Middleware(bmiddle.BambooMiddleHandler)
+				group.Bind()
+			})
+			s.Run()
+			return nil
+		},
+	}
+)

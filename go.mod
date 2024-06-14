@@ -2,11 +2,14 @@ module bamboo-dashboard
 
 go 1.22.2
 
-require github.com/gogf/gf/v2 v2.7.1
+require (
+	github.com/bamboo-services/bamboo-utils v0.1.4-beta
+	github.com/gogf/gf/contrib/drivers/pgsql/v2 v2.7.1
+	github.com/gogf/gf/v2 v2.7.1
+)
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/bamboo-services/bamboo-utils v0.1.4-beta // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -14,6 +17,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grokify/html-strip-tags-go v0.1.0 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
