@@ -118,6 +118,7 @@ func replaceStatement(table, statement string) string {
 	getReplace = strings.ReplaceAll(getReplace, "%xf_info%", getPrefix+"info")
 	getReplace = strings.ReplaceAll(getReplace, "%xf_agent%", getPrefix+"agent")
 	getReplace = strings.ReplaceAll(getReplace, "%xf_server%", getPrefix+"server")
+	getReplace = strings.ReplaceAll(getReplace, "%xf_group%", getPrefix+"group")
 	return getReplace
 }
 

@@ -48,6 +48,8 @@ func startDatabase(ctx context.Context) {
 	databaseTablePrepare(ctx, "user")
 	// 服务器表
 	databaseTablePrepare(ctx, "server")
+	// 探针分组表
+	databaseTablePrepare(ctx, "group")
 	// 探针表
 	databaseTablePrepare(ctx, "agent")
 	// 探针数据表

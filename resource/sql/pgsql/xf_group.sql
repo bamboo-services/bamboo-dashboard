@@ -2,9 +2,9 @@
  * ----------------------------------------------------------------------
  * 版权声明 (Copyright Notice)
  * ----------------------------------------------------------------------
- * 项目名称: 竹监控「BambooDashboard」
- * 描述: 一个由 Go 编写的服务监控系统 (A service monitoring system written in Go)
- * 作者: 筱锋 (xiao_lfeng)
+ * 项目名称: 竹监控「BambooDashboard」  
+ * 描述: 一个由 Go 编写的服务监控系统 (A service monitoring system written in Go)  
+ * 作者: 筱锋 (xiao_lfeng)  
  *
  * 版权所有 © 2016-2024 筱锋(xiao_lfeng). 保留所有权利。
  * ----------------------------------------------------------------------
@@ -21,34 +21,25 @@
  * ----------------------------------------------------------------------
  */
 
--- 探针信息表
+-- 探针分组
 create table "%xf_database%"
 (
-    agent_uuid  uuid                    not null
+    group_uuid  uuid                    not null
         constraint "%xf_database%_pk"
             primary key,
-    uuid        uuid                    not null
-        constraint "%xf_database%_%xf_user%_uuid_fk"
-            references "%xf_user%"
-            on delete cascade on update cascade,
-    server_uuid uuid
-        constraint "%xf_database%_%xf_server%_server_uuid_fk"
-            references "%xf_server%"
-            on delete cascade on update cascade,
-    group_uuid uuid
-        constraint "%xf_database%_%xf_group%_group_uuid_fk"
-            references "%xf_group%"
-            on update cascade on delete set null,
-    status      boolean   default false not null,
+    name        varchar(30)             not null,
+    description varchar(2048),
     created_at  timestamp default now() not null,
     updated_at  timestamp
 );
 
-comment on table "%xf_database%" is '探针信息表';
-comment on column "%xf_database%".agent_uuid is '探针信息UUID';
-comment on column "%xf_database%".uuid is '用户 uuid';
-comment on column "%xf_database%".server_uuid is '服务器UUID';
-comment on column "%xf_database%".status is '状态表';
-comment on column "%xf_database%".created_at is '创建时间';
-comment on column "%xf_database%".updated_at is '修改时间';
+comment on table "%xf_database%" is '探针分组';
 comment on column "%xf_database%".group_uuid is '分组UUID';
+comment on column "%xf_database%".name is '分组名字';
+comment on column "%xf_database%".description is '分组描述信息';
+comment on column "%xf_database%".created_at is '创建时间';
+comment on column "%xf_database%".updated_at is '更新时间';
+
+create unique index group_name_uindex
+    on "%xf_database%" (name);
+
