@@ -21,20 +21,23 @@
  * ----------------------------------------------------------------------
  */
 
--- 系统表
-create table "%xf_database%"
-(
-    system_uuid uuid         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    keyword     varchar(100) not null,
-    value       varchar      not null
-);
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
-comment on table "%xf_database%" is '系统信息表';
-comment on column "%xf_database%".system_uuid is '系统主键';
-comment on column "%xf_database%".keyword is '系统键';
-comment on column "%xf_database%".value is '系统值';
+export default function BaseAuth() {
+    const location = useLocation();
+    const navigate = useNavigate();
 
-create unique index "%xf_database%_keyword_uindex"
-    on "%xf_database%" (keyword);
+    // 检查是否在 /auth 页面，如果是则跳转到 /auth/login 页面
+    useEffect(() => {
+        if (location.pathname === "/auth") {
+            navigate("/auth/login");
+        }
+    }, [location.pathname]);
+
+    return (
+        <>
+            <Outlet/>
+        </>
+    )
+}

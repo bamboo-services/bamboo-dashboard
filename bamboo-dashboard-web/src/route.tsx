@@ -21,20 +21,29 @@
  * ----------------------------------------------------------------------
  */
 
--- 系统表
-create table "%xf_database%"
-(
-    system_uuid uuid         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    keyword     varchar(100) not null,
-    value       varchar      not null
-);
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import React from "react";
+import BaseHome from "./views/base_home.tsx";
+import HomeAgentList from "./views/home/home_agent_list.tsx";
+import BaseAuth from "./views/base_auth.tsx";
+import AuthLogin from "./views/auth/auth_login.tsx";
 
-comment on table "%xf_database%" is '系统信息表';
-comment on column "%xf_database%".system_uuid is '系统主键';
-comment on column "%xf_database%".keyword is '系统键';
-comment on column "%xf_database%".value is '系统值';
+const AppRoutes: React.FC = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<BaseHome/>}>
+                    {/* 主页面 */}
+                    <Route element={<HomeAgentList/>}/>
+                </Route>
 
-create unique index "%xf_database%_keyword_uindex"
-    on "%xf_database%" (keyword);
+                {/* 登录页面 */}
+                <Route path="/auth" element={<BaseAuth/>}>
+                    <Route path="login" element={<AuthLogin/>}/>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
+};
+
+export default AppRoutes;

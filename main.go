@@ -24,9 +24,8 @@
 package main
 
 import (
-	_ "bamboo-dashboard/internal/logic"
-
 	"bamboo-dashboard/internal/config"
+	_ "bamboo-dashboard/internal/logic"
 	_ "bamboo-dashboard/internal/packed"
 	"context"
 	"os"

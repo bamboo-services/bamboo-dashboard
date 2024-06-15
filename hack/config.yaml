@@ -15,7 +15,7 @@ gfcli:
     arch: "amd64,arm,arm64"
     system: "windows,linux,darwin"
     mod: "none"
-    packSrc: "resource"
+    packSrc: "resources,bamboo-dashboard-web/dist"
     path: "target"
     version: "v1.0.0"
   docker:

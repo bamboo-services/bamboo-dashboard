@@ -111,7 +111,7 @@ func databaseTablePrepare(ctx context.Context, tableName string) {
 func replaceStatement(table, statement string) string {
 	getPrefix := g.DB().GetPrefix()
 	getReplace := strings.ReplaceAll(statement, "%xf_database%", getPrefix+table)
-	getReplace = strings.ReplaceAll(getReplace, string(gres.GetContent("resource/license_sql.txt")), "")
+	getReplace = strings.ReplaceAll(getReplace, string(gres.GetContent("resources/license_sql.txt")), "")
 	// 专项内容替换
 	getReplace = strings.ReplaceAll(getReplace, "%xf_user%", getPrefix+"user")
 	getReplace = strings.ReplaceAll(getReplace, "%xf_role%", getPrefix+"role")

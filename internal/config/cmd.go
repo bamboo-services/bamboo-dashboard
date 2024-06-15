@@ -63,13 +63,12 @@ var (
 			})
 
 			// 前端路由分组
-			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Middleware(bmiddle.BambooMiddleHandler)
-				group.Bind()
+			s.BindHandler("/**/**/**", func(r *ghttp.Request) {
+				r.Response.ServeFile("bamboo-dashboard-web/dist/index.html")
 			})
 
 			// 加载静态资源
-			s.AddStaticPath("/static", "resource/public")
+			s.AddStaticPath("/assets", "bamboo-dashboard-web/dist/assets")
 
 			// 启动服务
 			s.Run()

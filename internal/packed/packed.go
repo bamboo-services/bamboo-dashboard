@@ -23,4 +23,4 @@
 
 package packed
 
-// gf pack resource internal/packed/build_pack_data.go --keepPath=true -n=packed
+// gf pack resources internal/packed/build_pack_data.go --keepPath=true -n=packed

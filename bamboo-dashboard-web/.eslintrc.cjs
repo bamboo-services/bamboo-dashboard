@@ -21,20 +21,21 @@
  * ----------------------------------------------------------------------
  */
 
--- 系统表
-create table "%xf_database%"
-(
-    system_uuid uuid         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    keyword     varchar(100) not null,
-    value       varchar      not null
-);
-
-comment on table "%xf_database%" is '系统信息表';
-comment on column "%xf_database%".system_uuid is '系统主键';
-comment on column "%xf_database%".keyword is '系统键';
-comment on column "%xf_database%".value is '系统值';
-
-create unique index "%xf_database%_keyword_uindex"
-    on "%xf_database%" (keyword);
+module.exports = {
+    root: true,
+    env: {browser: true, es2020: true},
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:react-hooks/recommended',
+    ],
+    ignorePatterns: ['dist', '.eslintrc.cjs'],
+    parser: '@typescript-eslint/parser',
+    plugins: ['react-refresh'],
+    rules: {
+        'react-refresh/only-export-components': [
+            'warn',
+            {allowConstantExport: true},
+        ],
+    },
+}
