@@ -21,28 +21,35 @@
  * ----------------------------------------------------------------------
  */
 
--- 角色表
-create table "%xf_database%"
-(
-    role_uuid        uuid                                                                         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    role_name        varchar(30)                                                                  not null,
-    display_name     varchar(30)                                                                  not null,
-    description      varchar(1024) default '站长好像很懒，这个信息都不写......'::character varying not null,
-    agent_permission jsonb         default '[]'::jsonb                                            not null,
-    created_at       timestamp     default now()                                                  not null,
-    updated_at       timestamp
-);
+package v1
 
-comment on table "%xf_database%" is '角色表';
-comment on column "%xf_database%".role_uuid is '角色 uuid';
-comment on column "%xf_database%".role_name is '角色名字(英文)';
-comment on column "%xf_database%".display_name is '展示名字';
-comment on column "%xf_database%".description is '角色描述';
-comment on column "%xf_database%".agent_permission is '拥有 Agent 权限';
-comment on column "%xf_database%".created_at is '创建时间';
-comment on column "%xf_database%".updated_at is '修改时间';
+import "github.com/gogf/gf/v2/frame/g"
 
-create unique index "%xf_database%_role_name_uindex"
-    on "%xf_database%" (role_name);
+// InitialConsoleUserReq
+//
+// # 初始化管理员
+//
+// 该接口为初始化管理员接口，用于初始化控制器的管理员账号；
+// 该接口在初始化后一次后第二次启动将不再生效；
+//
+// # 请求
+//   - Username:	用户名
+//   - Password:	密码
+//   - Email:		邮箱
+//   - Phone:		手机号
+type InitialConsoleUserReq struct {
+	g.Meta   `path:"/console" method:"Post" tags:"初始化控制器" sm:"初始化管理员" dc:"该接口为初始化管理员接口，用于初始化控制器的管理员账号；该接口在初始化后一次后第二次启动将不再生效；"`
+	Username string `json:"username" sm:"用户名" v:"required|length:4,30|regex:^[0-9A-Za-z_-]+$#请输入用户名|用户名长度为 4-30 位|用户名只能包含数字、字母、下划线和短横线"`
+	Password string `json:"password" sm:"密码" v:"required|length:6,30|password#请输入密码|密码长度为 6-30 位|密码格式不正确"`
+	Email    string `json:"email" sm:"邮箱" v:"required|email#请输入邮箱|邮箱格式不正确"`
+	Phone    string `json:"phone" sm:"手机号" v:"required|phone#请输入手机号|手机号格式不正确"`
+}
+
+// InitialConsoleUserRes
+//
+// # 响应
+//
+// 初始化管理员信息相应结构体
+type InitialConsoleUserRes struct {
+	g.Meta `mime:"application/json"`
+}

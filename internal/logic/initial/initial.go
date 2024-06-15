@@ -21,28 +21,17 @@
  * ----------------------------------------------------------------------
  */
 
--- 角色表
-create table "%xf_database%"
-(
-    role_uuid        uuid                                                                         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    role_name        varchar(30)                                                                  not null,
-    display_name     varchar(30)                                                                  not null,
-    description      varchar(1024) default '站长好像很懒，这个信息都不写......'::character varying not null,
-    agent_permission jsonb         default '[]'::jsonb                                            not null,
-    created_at       timestamp     default now()                                                  not null,
-    updated_at       timestamp
-);
+package initial
 
-comment on table "%xf_database%" is '角色表';
-comment on column "%xf_database%".role_uuid is '角色 uuid';
-comment on column "%xf_database%".role_name is '角色名字(英文)';
-comment on column "%xf_database%".display_name is '展示名字';
-comment on column "%xf_database%".description is '角色描述';
-comment on column "%xf_database%".agent_permission is '拥有 Agent 权限';
-comment on column "%xf_database%".created_at is '创建时间';
-comment on column "%xf_database%".updated_at is '修改时间';
+import "bamboo-dashboard/internal/service"
 
-create unique index "%xf_database%_role_name_uindex"
-    on "%xf_database%" (role_name);
+type sInitial struct {
+}
+
+func init() {
+	service.RegisterInitial(New())
+}
+
+func New() *sInitial {
+	return &sInitial{}
+}

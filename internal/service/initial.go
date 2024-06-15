@@ -21,28 +21,47 @@
  * ----------------------------------------------------------------------
  */
 
--- 角色表
-create table "%xf_database%"
-(
-    role_uuid        uuid                                                                         not null
-        constraint "%xf_database%_pk"
-            primary key,
-    role_name        varchar(30)                                                                  not null,
-    display_name     varchar(30)                                                                  not null,
-    description      varchar(1024) default '站长好像很懒，这个信息都不写......'::character varying not null,
-    agent_permission jsonb         default '[]'::jsonb                                            not null,
-    created_at       timestamp     default now()                                                  not null,
-    updated_at       timestamp
-);
+// ================================================================================
+// Code generated and maintained by GoFrame CLI tool. DO NOT EDIT.
+// You can delete these comments if you wish manually maintain this interface file.
+// ================================================================================
 
-comment on table "%xf_database%" is '角色表';
-comment on column "%xf_database%".role_uuid is '角色 uuid';
-comment on column "%xf_database%".role_name is '角色名字(英文)';
-comment on column "%xf_database%".display_name is '展示名字';
-comment on column "%xf_database%".description is '角色描述';
-comment on column "%xf_database%".agent_permission is '拥有 Agent 权限';
-comment on column "%xf_database%".created_at is '创建时间';
-comment on column "%xf_database%".updated_at is '修改时间';
+package service
 
-create unique index "%xf_database%_role_name_uindex"
-    on "%xf_database%" (role_name);
+import (
+	v1 "bamboo-dashboard/api/initial/v1"
+	"context"
+)
+
+type (
+	IInitial interface {
+		// ConsoleInitial
+		//
+		// # 控制台初始化
+		//
+		// 该方法为控制台初始化方法，用于初始化控制台用户；唯一超级管理员的注册；
+		//
+		// # 参数
+		//   - ctx:		上下文
+		//   - req:		请求参数
+		//
+		// # 返回
+		//   - err:		错误信息
+		ConsoleInitial(ctx context.Context, req *v1.InitialConsoleUserReq) (consoleUUID *string, err error)
+	}
+)
+
+var (
+	localInitial IInitial
+)
+
+func Initial() IInitial {
+	if localInitial == nil {
+		panic("implement not found for interface IInitial, forgot register?")
+	}
+	return localInitial
+}
+
+func RegisterInitial(i IInitial) {
+	localInitial = i
+}

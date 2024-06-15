@@ -40,7 +40,7 @@ import (
 //   - su:		启动(StartUp)
 func Start(ctx context.Context) {
 	g.Log().Noticef(ctx, "==================================================")
-	g.Log().Noticef(ctx, "[STARTUP] 系统开始初始化...")
+	g.Log().Noticef(ctx, "[STAR] 系统开始初始化...")
 
 	/*
 	 * 初始化检查
@@ -50,8 +50,12 @@ func Start(ctx context.Context) {
 	startDatabase(ctx)
 	// 信息表初始化
 	startInformation(ctx)
+	// 角色初始化
+	startRole(ctx)
+	// 对全局变量操作
+	startGlobalVariable(ctx)
 
-	g.Log().Noticef(ctx, "[STARTUP] 系统初始化完成")
+	g.Log().Noticef(ctx, "[STAR] 系统初始化完成")
 	g.Log().Noticef(ctx, "==================================================")
 
 	fmt.Println(`

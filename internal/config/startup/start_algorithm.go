@@ -57,7 +57,7 @@ func databaseTablePrepare(ctx context.Context, tableName string) {
 		break
 	default:
 		// 如果数据库类型不支持，则直接返回
-		g.Log().Errorf(ctx, "[STARTUP] 数据库类型不支持: %s", getType.String())
+		g.Log().Errorf(ctx, "[STAR] 数据库类型不支持: %s", getType.String())
 		os.Exit(502)
 	}
 
@@ -81,16 +81,16 @@ func databaseTablePrepare(ctx context.Context, tableName string) {
 				return nil
 			})
 			if err != nil {
-				g.Log().Errorf(ctx, "[STARTUP] 数据表创建失败: %s", err.Error())
+				g.Log().Errorf(ctx, "[STAR] 数据表创建失败: %s", err.Error())
 				os.Exit(502)
 			} else {
-				g.Log().Debugf(ctx, "[STARTUP] 数据表创建成功: %s", tableName)
+				g.Log().Debugf(ctx, "[STAR] 数据表创建成功: %s", tableName)
 			}
 		} else {
-			g.Log().Debugf(ctx, "[STARTUP] 数据表已存在: %s", tableName)
+			g.Log().Debugf(ctx, "[STAR] 数据表已存在: %s", tableName)
 		}
 	} else {
-		g.Log().Errorf(ctx, "[STARTUP] 不存在数据表 %s", tableName)
+		g.Log().Errorf(ctx, "[STAR] 不存在数据表 %s", tableName)
 		os.Exit(502)
 	}
 }
@@ -142,15 +142,15 @@ func informationDataPrepare(ctx context.Context, key, value string) {
 			Value:      value,
 		}).OnConflict("keyword").Save()
 		if err != nil {
-			g.Log().Errorf(ctx, "[STARTUP] 信息表初始化失败: %s", err.Error())
+			g.Log().Errorf(ctx, "[STAR] 信息表初始化失败: %s", err.Error())
 			os.Exit(502)
 		}
 		if len(value) > 50 {
-			g.Log().Debugf(ctx, "[STARTUP] 初始化信息表键 %s 值 %s 成功", key, strings.TrimSpace(
+			g.Log().Debugf(ctx, "[STAR] 初始化信息表键 %s 值 %s 成功", key, strings.TrimSpace(
 				strings.ReplaceAll(value[0:50], "\n", "")+"..."),
 			)
 		} else {
-			g.Log().Debugf(ctx, "[STARTUP] 初始化信息表键 %s 值 %s 成功", key, value)
+			g.Log().Debugf(ctx, "[STAR] 初始化信息表键 %s 值 %s 成功", key, value)
 		}
 	}
 }
@@ -178,8 +178,62 @@ func mailReplaceLicense(mailTemplateName string) string {
 		)
 		return getReplace
 	} else {
-		g.Log().Errorf(context.Background(), "[STARTUP] 不存在邮件模板 %s", mailTemplateName)
+		g.Log().Errorf(context.Background(), "[STAR] 不存在邮件模板 %s", mailTemplateName)
 		os.Exit(502)
 	}
 	return ""
+}
+
+// roleDataPrepare
+//
+// # 角色初始化
+//
+// 该方法为初始化角色的方法，检查角色是否有此数据，若没有则初始化; 该方法会检查角色是否存在，若不存在则初始化角色；
+//
+// # 参数
+//   - ctx:			上下文
+//   - roleName:		角色名
+//   - displayName:	显示名
+//   - description:	描述
+func roleDataPrepare(ctx context.Context, roleName, displayName, description string) {
+	// 检查数据是否存在
+	record, _ := dao.Role.Ctx(ctx).Where(do.Role{RoleName: roleName}).One()
+	if record.IsEmpty() {
+		_, err := dao.Role.Ctx(ctx).Data(do.Role{
+			RoleUuid:    butil.GenerateRandUUID().String(),
+			RoleName:    roleName,
+			DisplayName: displayName,
+			Description: description,
+		}).OnConflict("role_name").Save()
+		if err != nil {
+			g.Log().Errorf(ctx, "[STAR] 角色初始化失败: %s", err.Error())
+			os.Exit(502)
+		}
+		g.Log().Debugf(ctx, "[STAR] 初始化角色 %s 成功", roleName)
+	}
+}
+
+// getValueWithInfoTable
+//
+// # 信息表获取
+//
+// 该方法为获取信息表的方法，用于获取信息表中的数据；若数据不存在则直接退出程序；请注意，数据是一定存在的，如果不存在则说明人为操作过数据库；
+// 并非原始数据库导致的，原始数据库不会删除 info 表的内容信息；
+//
+// # 参数
+//   - ctx:		上下文
+//   - key:		键
+//
+// # 返回
+//   - interface{}:	值
+func getValueWithInfoTable(ctx context.Context, key string) interface{} {
+	var getValue *entity.Info
+	err := dao.Info.Ctx(ctx).Where(do.Info{Keyword: key}).Scan(&getValue)
+	if err != nil {
+		g.Log().Errorf(ctx, "[STAR] 数据 %s 获取失败: %s", key, err.Error())
+		os.Exit(502)
+		return nil
+	} else {
+		return getValue.Value
+	}
 }

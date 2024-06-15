@@ -21,62 +21,54 @@
  * ----------------------------------------------------------------------
  */
 
-package config
+package initial
 
 import (
-	"bamboo-dashboard/internal/config/startup"
-	"bamboo-dashboard/internal/controller/initial"
+	v1 "bamboo-dashboard/api/initial/v1"
+	"bamboo-dashboard/internal/dao"
+	"bamboo-dashboard/internal/model/do"
 	"context"
-	"github.com/bamboo-services/bamboo-utils/bmiddle"
+	"github.com/bamboo-services/bamboo-utils/bcode"
+	"github.com/bamboo-services/bamboo-utils/berror"
+	"github.com/bamboo-services/bamboo-utils/butil"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gtime"
 )
 
-var (
-	Main = gcmd.Command{
-		Name:  "main",
-		Usage: "main",
-		Brief: "竹监控「BambooDashboard」 - 一个由 Go 编写的服务监控系统(A service monitoring system written in Go)",
-		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			// 系统初始化
-			startup.Start(ctx)
-			// 启动服务
-			s := g.Server("bamboo")
-			// 关闭路由映射输出
-			s.SetDumpRouterMap(false)
-
-			// 后端路由分组
-			s.Group("/api/v1", func(group *ghttp.RouterGroup) {
-				// 初始化
-				s.Group("/initial", func(group *ghttp.RouterGroup) {
-					group.Middleware(bmiddle.BambooMiddleHandler)
-					group.Bind(
-						initial.NewV1(),
-					)
-				})
-				s.Group("/", func(group *ghttp.RouterGroup) {
-					group.Middleware(bmiddle.BambooMiddleHandler)
-					group.Bind()
-				})
-			})
-
-			// 前端路由分组
-			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Middleware(bmiddle.BambooMiddleHandler)
-				group.Bind()
-			})
-
-			// 加载静态资源
-			s.AddStaticPath("/static", "resource/public")
-
-			// 启动服务
-			s.Run()
-
-			// 服务结束
-			g.Log().Warningf(ctx, "[SYST] 服务在 %s 结束运行", gtime.Now().String())
-			return nil
-		},
+// ConsoleInitial
+//
+// # 控制台初始化
+//
+// 该方法为控制台初始化方法，用于初始化控制台用户；唯一超级管理员的注册；
+//
+// # 参数
+//   - ctx:		上下文
+//   - req:		请求参数
+//
+// # 返回
+//   - err:		错误信息
+func (s *sInitial) ConsoleInitial(ctx context.Context, req *v1.InitialConsoleUserReq) (consoleUUID *string, err error) {
+	g.Log().Noticef(ctx, "[SERV] sInitial.ConsoleInitial | 控制台初始化")
+	// 创建用户
+	getConsoleUUID := butil.GenerateRandUUID().String()
+	// TOTP 密钥
+	totpSecret := butil.GenerateRandUUID()
+	// 获取管理员角色
+	record, err := dao.Role.Ctx(ctx).Fields(dao.Role.Columns().RoleUuid).Where(do.Role{RoleName: "admin"}).One()
+	if err != nil {
+		return nil, berror.NewErrorHasError(bcode.ServerInternalError, err)
 	}
-)
+	// 创建用户
+	_, err = dao.User.Ctx(ctx).Data(do.User{
+		Uuid:     getConsoleUUID,
+		Username: req.Username,
+		Email:    req.Email,
+		Phone:    req.Phone,
+		Password: butil.PasswordEncode(req.Password),
+		Totp:     totpSecret,
+		Role:     record.GMap().Get(dao.Role.Columns().RoleUuid),
+	}).Insert()
+	if err != nil {
+		return nil, berror.NewErrorHasError(bcode.ServerInternalError, err)
+	}
+	return &getConsoleUUID, nil
+}

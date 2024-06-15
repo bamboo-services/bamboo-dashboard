@@ -24,8 +24,10 @@
 package startup
 
 import (
+	"bamboo-dashboard/internal/constants"
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/util/gconv"
 )
 
 // startDatabase
@@ -38,7 +40,7 @@ import (
 // # 参数
 //   - ctx:		上下文
 func startDatabase(ctx context.Context) {
-	g.Log().Noticef(ctx, "[STARTUP] 数据表初始化")
+	g.Log().Noticef(ctx, "[STAR] 数据表初始化")
 
 	// 系统表
 	databaseTablePrepare(ctx, "info")
@@ -65,7 +67,7 @@ func startDatabase(ctx context.Context) {
 // # 参数
 //   - ctx:		上下文
 func startInformation(ctx context.Context) {
-	g.Log().Noticef(ctx, "[STARTUP] 信息表初始化")
+	g.Log().Noticef(ctx, "[STAR] 信息表初始化")
 
 	// 系统相关信息
 	informationDataPrepare(ctx, "system_name", "竹监控")
@@ -74,6 +76,8 @@ func startInformation(ctx context.Context) {
 	informationDataPrepare(ctx, "system_license", "MIT")
 	informationDataPrepare(ctx, "system_license_link", "https://opensource.org/license/MIT")
 	informationDataPrepare(ctx, "system_description", "一个由 Go 编写的服务监控系统")
+	informationDataPrepare(ctx, "system_initial", "false")
+	informationDataPrepare(ctx, "system_admin_user", "")
 	// 配置相关信息
 	informationDataPrepare(ctx, "config_redis", "false")
 	informationDataPrepare(ctx, "config_redis_host", "localhost")
@@ -95,4 +99,54 @@ func startInformation(ctx context.Context) {
 		"mail_template_verification_code",
 		mailReplaceLicense("verification_code"),
 	)
+}
+
+// startRole
+//
+// # 角色初始化
+//
+// 该方法为初始化角色的方法，检查角色是否有此数据，若没有则初始化；
+//
+// # 参数
+//   - ctx:		上下文
+func startRole(ctx context.Context) {
+	g.Log().Noticef(ctx, "[STAR] 角色初始化")
+
+	// 系统管理员
+	roleDataPrepare(ctx, "admin", "系统管理员", "系统级别的管理员，具有最高权限")
+	// 普通用户
+	roleDataPrepare(ctx, "user", "普通用户", "普通用户，具有一般权限，无法进行系统级别的操作")
+}
+
+// startGlobalVariable
+//
+// # 全局变量初始化
+//
+// 该方法为全局变量初始化的方法，用于初始化全局变量；
+//
+// # 参数
+//   - ctx:		上下文
+func startGlobalVariable(ctx context.Context) {
+	g.Log().Noticef(ctx, "[STAR] 全局变量初始化")
+
+	// 系统初始化时间
+	constants.HasInitialMode = gconv.Bool(getValueWithInfoTable(ctx, "system_initial"))
+	// 系统管理员 UUID
+	constants.GetConsoleAdminUUID = gconv.String(getValueWithInfoTable(ctx, "system_admin_user"))
+	// 是否启用 Redis
+	constants.HasEnableRedis = gconv.Bool(getValueWithInfoTable(ctx, "config_redis"))
+	// Redis 配置
+	constants.Redis = &constants.RedisConfig{
+		Host:     gconv.String(getValueWithInfoTable(ctx, "config_redis_host")),
+		Port:     gconv.Int(getValueWithInfoTable(ctx, "config_redis_port")),
+		Password: gconv.String(getValueWithInfoTable(ctx, "config_redis_password")),
+		DB:       gconv.Int(getValueWithInfoTable(ctx, "config_redis_db")),
+	}
+	// 系统名称
+	constants.System = &constants.SystemConfig{
+		SystemName:        gconv.String(getValueWithInfoTable(ctx, "system_name")),
+		SystemVersion:     gconv.String(getValueWithInfoTable(ctx, "system_version")),
+		SystemAuthor:      gconv.String(getValueWithInfoTable(ctx, "system_author")),
+		SystemDescription: gconv.String(getValueWithInfoTable(ctx, "system_description")),
+	}
 }

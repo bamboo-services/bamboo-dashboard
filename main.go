@@ -24,13 +24,16 @@
 package main
 
 import (
+	_ "bamboo-dashboard/internal/logic"
+
 	"bamboo-dashboard/internal/config"
 	_ "bamboo-dashboard/internal/packed"
 	"context"
+	"os"
+
 	_ "github.com/gogf/gf/contrib/drivers/pgsql/v2"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
-	"os"
 )
 
 func main() {
@@ -42,7 +45,7 @@ func main() {
 	case "mysql":
 		break
 	default:
-		g.Log().Errorf(context.Background(), "[STARTUP] 数据库类型不支持: %s", getContext.String())
+		g.Log().Errorf(context.Background(), "[STAR] 数据库类型不支持: %s", getContext.String())
 		g.Log().Warning(context.Background(), "按回车键退出...")
 		endKey := make([]byte, 1)
 		_, _ = os.Stdin.Read(endKey)
